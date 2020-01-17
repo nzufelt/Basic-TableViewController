@@ -7,18 +7,26 @@
 //
 
 import UIKit
+import Foundation // For UserDefaults
 
 class InitialTableViewController: UITableViewController {
-    var students: [String] = ["Erik", "Samar"]
+    let defaults = UserDefaults.standard
+    var students: [String] = [] // placeholder, will be set by userdefaults
 
     override func viewDidLoad() {
         super.viewDidLoad()
-
-        // Uncomment the following line to preserve selection between presentations
-        // self.clearsSelectionOnViewWillAppear = false
-
-        // Uncomment the following line to display an Edit button in the navigation bar for this view controller.
-        // self.navigationItem.rightBarButtonItem = self.editButtonItem
+        
+        // clear the userdefaults
+//        defaults.set([String](), forKey: "students")
+        
+        // load the data from UserDefaults
+        if let studentData = defaults.array(forKey: "students") as? [String] {
+            // successfully found the saved data!
+            students = studentData
+        } else {
+            // No student data saved (first time only, probably!
+            defaults.set([String](), forKey: "students")
+        }
     }
 
     // MARK: - Table view data source
@@ -41,11 +49,21 @@ class InitialTableViewController: UITableViewController {
         // Downcasting
         if let cellWithOtherName = cell as? InitialTableViewCell {
             cellWithOtherName.studentNameLabel.text = students[indexPath.row]
+            
+            cellWithOtherName.deleteButton.addTarget(self, action: #selector(deleteButtonPressed(_:)), for: .touchUpInside)
+            cellWithOtherName.deleteButton.tag = indexPath.row
             return cellWithOtherName
         }
         
         return cell
     }
+    
+    @objc func deleteButtonPressed(_ sender: UIButton) {
+        print("trying to delete button at row number \(sender.tag)")
+        
+        // Delete entry number `sender.tag` from the array!
+    }
+    
 
     /*
     // Override to support conditional editing of the table view.
@@ -92,4 +110,14 @@ class InitialTableViewController: UITableViewController {
     }
     */
 
+    @IBAction func addNewPressed(_ sender: Any) {
+        let newEntry = Int.random(in: 100...200)
+        students.append("Student #\(newEntry)")
+        
+        // reload the table (if you aren't going to a new screen to add something!
+        tableView.reloadData()
+        
+        // Save the new UserDefaults
+        defaults.set(students, forKey: "students")
+    }
 }

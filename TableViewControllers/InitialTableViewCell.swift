@@ -11,6 +11,7 @@ import UIKit
 class InitialTableViewCell: UITableViewCell {
 
     @IBOutlet weak var studentNameLabel: UILabel!
+    @IBOutlet weak var deleteButton: UIButton!
     
     override func awakeFromNib() {
         super.awakeFromNib()
@@ -22,5 +23,6 @@ class InitialTableViewCell: UITableViewCell {
 
         // Configure the view for the selected state
     }
-
+    
+    
 }
